@@ -12,22 +12,14 @@
     Content-Type = "application/json"
     Access-Control-Allow-Origin = "*"
 
-# Redirect all 404s to index for SPA behavior
+# Simple redirects for Next.js
 [[redirects]]
   from = "/*"
-  to = "/index.html"
-  status = 200
-  force = false
-  conditions = {Role = ["anonymous"]}
-
-# Redirect for app-coming-soon page
-[[redirects]]
-  from = "/app-coming-soon"
-  to = "/app-coming-soon"
+  to = "/.netlify/functions/next"
   status = 200
 
-# Redirect for article pages
+# Ensure assetlinks.json is accessible
 [[redirects]]
-  from = "/article/*"
-  to = "/article/[id]"
+  from = "/.well-known/assetlinks.json"
+  to = "/.well-known/assetlinks.json"
   status = 200
