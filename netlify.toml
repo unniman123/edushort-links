@@ -1,0 +1,33 @@
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+# Handle the .well-known directory correctly
+[[headers]]
+  for = "/.well-known/*"
+  [headers.values]
+    Content-Type = "application/json"
+    Access-Control-Allow-Origin = "*"
+
+# Redirect all 404s to index for SPA behavior
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+  force = false
+  conditions = {Role = ["anonymous"]}
+
+# Redirect for app-coming-soon page
+[[redirects]]
+  from = "/app-coming-soon"
+  to = "/app-coming-soon"
+  status = 200
+
+# Redirect for article pages
+[[redirects]]
+  from = "/article/*"
+  to = "/article/[id]"
+  status = 200

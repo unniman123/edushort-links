@@ -1,0 +1,16 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.ajilkojilgokulravi.unniman",
+      "sha256_cert_fingerprints": [
+        "71b9b34fb79ee11f0f4288ac3a94be3a4d2886015c11512afa95fcbc0689766a",
+        "ece852a9482a84aa03972b7d79784dcaf0020e330dedd76b8dfcec56f2c629a7",
+        "fb404e6763c4f34ab4789a075ff0355953508a9bec2ffa3bd89a319aaa94c45"
+      ]
+    }
+  }
+]
