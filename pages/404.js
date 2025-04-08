@@ -2,9 +2,12 @@ import Head from 'next/head';
 import Link from 'next/link';
 
 export default function Custom404() {
+  // Get Play Store URL from environment variables
+  const playStoreUrl = process.env.NEXT_PUBLIC_PLAY_STORE_URL || 'https://play.google.com/store/apps/details?id=com.ajilkojilgokulravi.unniman';
+
   // Function to redirect to Play Store
   const goToPlayStore = () => {
-    window.location.href = 'https://play.google.com/store/apps/details?id=com.ajilkojilgokulravi.unniman';
+    window.location.href = playStoreUrl;
   };
 
   return (
@@ -31,9 +34,9 @@ export default function Custom404() {
         <div style={{
           marginBottom: '30px',
         }}>
-          <img 
-            src="/logo.png" 
-            alt="Edushorts Logo" 
+          <img
+            src="/logo.png"
+            alt="Edushorts Logo"
             style={{
               width: '80px',
               height: '80px',
@@ -72,8 +75,8 @@ export default function Custom404() {
               Go to Homepage
             </a>
           </Link>
-          
-          <button 
+
+          <button
             onClick={goToPlayStore}
             style={{
               backgroundColor: '#4285F4', // Replace with your brand color

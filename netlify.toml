@@ -23,3 +23,10 @@
   from = "/.well-known/assetlinks.json"
   to = "/.well-known/assetlinks.json"
   status = 200
+
+# Handle article pages
+[[redirects]]
+  from = "/article/*"
+  to = "/.netlify/functions/next/article/[id]"
+  status = 200
+  force = true
