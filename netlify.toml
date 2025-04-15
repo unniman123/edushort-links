@@ -13,6 +13,14 @@
     Access-Control-Allow-Origin = "*"
     Cache-Control = "public, max-age=300"
 
+# Specific header for assetlinks.json to ensure proper content-type
+[[headers]]
+  for = "/.well-known/assetlinks.json"
+  [headers.values]
+    Content-Type = "application/json"
+    X-Content-Type-Options = "nosniff"
+    Access-Control-Allow-Origin = "*"
+
 # Add headers for article pages to help with deep linking
 [[headers]]
   for = "/article/*"
