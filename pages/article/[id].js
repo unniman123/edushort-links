@@ -23,19 +23,61 @@ export default function ArticleRedirect() {
       setRedirecting(false);
     };
 
-    // Try to detect if we're in Chrome on Android for better intent handling
-    const isAndroidChrome = /android/i.test(navigator.userAgent) && /chrome/i.test(navigator.userAgent);
+    // Detect browser and platform
+    const ua = navigator.userAgent || '';
+    const isAndroid = /android/i.test(ua);
+    const isChrome = /chrome|chromium|crios/i.test(ua);
+    const isSamsung = /samsung/i.test(ua);
+    const isFirefox = /firefox|fxios/i.test(ua);
 
-    if (isAndroidChrome) {
-      // Use Android intent URL format for Chrome (better handling)
-      const intentUrl = `intent://article/${id}#Intent;scheme=${appScheme};package=${appPackageName};S.browser_fallback_url=${encodeURIComponent(playStoreUrl)};end`;
-      window.location.href = intentUrl;
+    // Try multiple approaches for maximum compatibility
+    if (isAndroid) {
+      // Create an iframe for better handling in some browsers
+      const iframe = document.createElement('iframe');
+      iframe.style.display = 'none';
+      document.body.appendChild(iframe);
 
-      // Still set a fallback timeout in case the intent doesn't work
-      const timeout = setTimeout(redirectToPlayStore, appOpenTimeout);
-      return () => clearTimeout(timeout);
+      // Try multiple URI schemes
+      try {
+        // 1. First try the intent URL for Chrome (most reliable)
+        if (isChrome || isSamsung) {
+          // Use Android intent URL format with multiple fallbacks
+          const intentUrl = `intent://article/${id}#Intent;` +
+            `scheme=${appScheme};` +
+            `package=${appPackageName};` +
+            `S.browser_fallback_url=${encodeURIComponent(playStoreUrl)};` +
+            `end`;
+          window.location.href = intentUrl;
+        }
+        // 2. For Firefox and others, try direct scheme
+        else {
+          // Try the app scheme directly
+          iframe.contentWindow.location.href = `${appScheme}://article/${id}`;
+          // Also try as a backup
+          window.location.href = `${appScheme}://article/${id}`;
+        }
+      } catch (e) {
+        console.error('Error during deep link attempt:', e);
+      }
+
+      // Set a fallback timeout to redirect to Play Store if app doesn't open
+      const timeout = setTimeout(() => {
+        // Remove the iframe after timeout
+        if (iframe && iframe.parentNode) {
+          iframe.parentNode.removeChild(iframe);
+        }
+        redirectToPlayStore();
+      }, appOpenTimeout);
+
+      return () => {
+        clearTimeout(timeout);
+        // Clean up iframe if component unmounts
+        if (iframe && iframe.parentNode) {
+          iframe.parentNode.removeChild(iframe);
+        }
+      };
     } else {
-      // For other browsers, use the standard URL scheme approach
+      // For non-Android devices, just use the standard URL scheme approach
       const appUrl = `${appScheme}://article/${id}`;
       window.location.href = appUrl;
 
@@ -64,6 +106,17 @@ export default function ArticleRedirect() {
         <meta httpEquiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
         <meta httpEquiv="Pragma" content="no-cache" />
         <meta httpEquiv="Expires" content="0" />
+
+        {/* App link meta tags */}
+        <meta property="al:android:package" content={appPackageName} />
+        <meta property="al:android:url" content={`${appScheme}://article/${id}`} />
+        <meta property="al:android:app_name" content="Edushorts" />
+        <meta property="al:web:url" content={playStoreUrl} />
+
+        {/* For Twitter */}
+        <meta name="twitter:app:name:googleplay" content="Edushorts" />
+        <meta name="twitter:app:id:googleplay" content={appPackageName} />
+        <meta name="twitter:app:url:googleplay" content={`${appScheme}://article/${id}`} />
       </Head>
 
       <img

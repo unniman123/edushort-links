@@ -11,6 +11,15 @@
   [headers.values]
     Content-Type = "application/json"
     Access-Control-Allow-Origin = "*"
+    Cache-Control = "public, max-age=300"
+
+# Add headers for article pages to help with deep linking
+[[headers]]
+  for = "/article/*"
+  [headers.values]
+    X-Frame-Options = "ALLOWALL"
+    Access-Control-Allow-Origin = "*"
+    Cache-Control = "no-cache, no-store, must-revalidate"
 
 # Simple redirects for Next.js
 [[redirects]]
@@ -24,7 +33,14 @@
   to = "/.well-known/assetlinks.json"
   status = 200
 
-# Handle article pages
+# Handle article pages - more specific rule first
+[[redirects]]
+  from = "/article/:id"
+  to = "/.netlify/functions/next/article/:id"
+  status = 200
+  force = true
+
+# Fallback for article pages
 [[redirects]]
   from = "/article/*"
   to = "/.netlify/functions/next/article/[id]"

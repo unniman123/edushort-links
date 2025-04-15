@@ -1,0 +1,88 @@
+# Recommended AndroidManifest.xml Configuration for Edushorts App
+
+Here's the recommended configuration for your AndroidManifest.xml to properly handle deep links:
+
+```xml
+<!-- App Links (HTTPS) -->
+<intent-filter android:autoVerify="true">
+    <action android:name="android.intent.action.VIEW" />
+    <category android:name="android.intent.category.DEFAULT" />
+    <category android:name="android.intent.category.BROWSABLE" />
+    <data 
+        android:scheme="https" 
+        android:host="edushortlinks.netlify.app" 
+        android:pathPattern="/article/*" />
+</intent-filter>
+
+<!-- HTTP Links (backup) -->
+<intent-filter>
+    <action android:name="android.intent.action.VIEW" />
+    <category android:name="android.intent.category.DEFAULT" />
+    <category android:name="android.intent.category.BROWSABLE" />
+    <data 
+        android:scheme="http" 
+        android:host="edushortlinks.netlify.app" 
+        android:pathPattern="/article/*" />
+</intent-filter>
+
+<!-- Custom Scheme - edushort:// -->
+<intent-filter>
+    <action android:name="android.intent.action.VIEW" />
+    <category android:name="android.intent.category.DEFAULT" />
+    <category android:name="android.intent.category.BROWSABLE" />
+    <data 
+        android:scheme="edushort" 
+        android:host="article" 
+        android:pathPattern="/*" />
+</intent-filter>
+
+<!-- Package Scheme - com.ajilkojilgokulravi.unniman:// -->
+<intent-filter>
+    <action android:name="android.intent.action.VIEW" />
+    <category android:name="android.intent.category.DEFAULT" />
+    <category android:name="android.intent.category.BROWSABLE" />
+    <data 
+        android:scheme="com.ajilkojilgokulravi.unniman" 
+        android:host="article" 
+        android:pathPattern="/*" />
+</intent-filter>
+
+<!-- Expo Scheme - exp+edushorts:// -->
+<intent-filter>
+    <action android:name="android.intent.action.VIEW" />
+    <category android:name="android.intent.category.DEFAULT" />
+    <category android:name="android.intent.category.BROWSABLE" />
+    <data 
+        android:scheme="exp+edushorts" 
+        android:host="article" 
+        android:pathPattern="/*" />
+</intent-filter>
+```
+
+## Important Notes:
+
+1. **Separate Intent Filters**: Each scheme has its own intent filter for clarity and to prevent conflicts.
+
+2. **Path Patterns**: Using `pathPattern` instead of `pathPrefix` for more precise matching.
+
+3. **Multiple Schemes**: Supporting multiple schemes (edushort://, com.ajilkojilgokulravi.unniman://, exp+edushorts://) for maximum compatibility.
+
+4. **HTTP Backup**: Including HTTP as a backup for HTTPS.
+
+5. **Host Specification**: For custom schemes, using "article" as the host with a path pattern.
+
+## Testing Deep Links:
+
+You can test these deep links using ADB:
+
+```bash
+# Test HTTPS link
+adb shell am start -a android.intent.action.VIEW -d "https://edushortlinks.netlify.app/article/123"
+
+# Test custom scheme
+adb shell am start -a android.intent.action.VIEW -d "edushort://article/123"
+```
+
+## Handling in Your App:
+
+Make sure your app code properly handles these deep links by extracting the article ID from the intent data.
